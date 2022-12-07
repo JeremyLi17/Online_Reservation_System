@@ -26,6 +26,11 @@ public class ReservationController {
         reservationService.makeReservation(reservation);
     }
 
+    @GetMapping("/all")
+    public List<Reservation> getAllReservation() {
+        return reservationService.getAllReservation();
+    }
+
     @GetMapping
     public List<Reservation> getReservationByUserId(@RequestParam Integer userId) {
         return reservationService.getReservationByUserId(userId);

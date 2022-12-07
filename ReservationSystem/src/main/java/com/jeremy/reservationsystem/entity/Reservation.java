@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.util.Date;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
@@ -39,7 +40,10 @@ public class Reservation {
     private Integer id;
 
     @Column(name = "date", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd",
+            without = {ADJUST_DATES_TO_CONTEXT_TIME_ZONE}
+    )
     private Date date;
 
     @Column(name = "room_id", nullable = false)
