@@ -23,6 +23,8 @@ public class ClientRequest {
     private final static String BASE_URL = "http://localhost:8082";
     private final static String USER_URL = "/api/user";
     private final static String RESERVATION_URL = "/api/reservation";
+    public static final String BY_EMAIL_PATH = "/byEmail";
+    public static final String BY_ID_PATH = "/byId";
     private final static Gson gson = new Gson();
 
     public static AppUser getUserInfo(Integer userId) {
@@ -32,7 +34,46 @@ public class ClientRequest {
         try {
             Map<String, String> params = new HashMap<>();
             params.put("id", String.valueOf(userId));
-            URL url = new URL(BASE_URL + USER_URL
+            URL url = new URL(BASE_URL + USER_URL + BY_ID_PATH
+                    + getParamsString(params));
+
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            System.out.println("URL: " + con.getURL());
+            int statusCode = con.getResponseCode();
+            System.out.println("GET Response Code: " + statusCode);
+
+            if (statusCode == HTTP_OK) {
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer json = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    json.append(inputLine);
+                }
+                in.close();
+                user = gson.fromJson(json.toString(), AppUser.class);
+                System.out.println(user);
+            } else {
+                System.out.println("GET request failed with code " + statusCode);
+            }
+            con.disconnect();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return user;
+    }
+
+    public static AppUser getUserInfo(String email) {
+        AppUser user = null;
+        if (email == null) return user;
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("email", email);
+            URL url = new URL(BASE_URL + USER_URL + BY_EMAIL_PATH
                     + getParamsString(params));
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -234,6 +275,8 @@ public class ClientRequest {
 
     public static void main(String[] args) {
 //        getUserInfo(1);
+//        getUserInfo("email1");
+//        getUserInfo("email_not_exist");
 //        getReservationByUserId(1);
 //        registerUser(
 //                "1207",
