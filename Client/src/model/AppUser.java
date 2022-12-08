@@ -41,4 +41,28 @@ public class AppUser {
                 ", reservations=" + reservations +
                 '}';
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
 }

@@ -41,4 +41,28 @@ public class Reservation {
                 ", user=" + user +
                 '}';
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public Integer getTimeSlot() {
+        return timeSlot;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
 }
