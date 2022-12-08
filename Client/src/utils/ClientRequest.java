@@ -1,6 +1,7 @@
 package utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import model.AppUser;
 import model.Reservation;
@@ -25,7 +26,7 @@ public class ClientRequest {
     private final static String RESERVATION_URL = "/api/reservation";
     public static final String BY_EMAIL_PATH = "/byEmail";
     public static final String BY_ID_PATH = "/byId";
-    private final static Gson gson = new Gson();
+    private final static Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();;
 
     public static AppUser getUserInfo(Integer userId) {
         AppUser user = null;
@@ -55,7 +56,7 @@ public class ClientRequest {
                 }
                 in.close();
                 user = gson.fromJson(json.toString(), AppUser.class);
-                System.out.println(user);
+
             } else {
                 System.out.println("GET request failed with code " + statusCode);
             }
@@ -94,7 +95,6 @@ public class ClientRequest {
                 }
                 in.close();
                 user = gson.fromJson(json.toString(), AppUser.class);
-                System.out.println(user);
             } else {
                 System.out.println("GET request failed with code " + statusCode);
             }
@@ -134,7 +134,6 @@ public class ClientRequest {
                 in.close();
                 TypeToken<List<Reservation>> typeToken = new TypeToken<List<Reservation>>(){};
                 reservations = gson.fromJson(json.toString(), typeToken);
-                System.out.println(reservations);
             } else {
                 System.out.println("GET request failed with code " + statusCode);
             }
@@ -192,7 +191,8 @@ public class ClientRequest {
     public static void makeReservation(Date date,
                                        Integer roomId,
                                        Integer timeSlot,
-                                       Integer userId) {
+                                       Integer userId,
+                                       String description) {
         try {
             URL url = new URL(BASE_URL + RESERVATION_URL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -209,6 +209,7 @@ public class ClientRequest {
             Map<String, Integer> user = new HashMap<>();
             user.put("id", userId);
             body.put("user", user);
+            if (description != null) body.put("description", description);
 
             String jsonInputString = gson.toJson(body);
 
@@ -273,6 +274,40 @@ public class ClientRequest {
         }
     }
 
+    public static List<Reservation> getAllReservation() {
+        List<Reservation> reservations = new ArrayList<>();
+        try {
+            URL url = new URL(BASE_URL + RESERVATION_URL + "/all");
+
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            System.out.println("URL: " + con.getURL());
+            int statusCode = con.getResponseCode();
+            System.out.println("GET Response Code: " + statusCode);
+
+            if (statusCode == HTTP_OK) {
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer json = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    json.append(inputLine);
+                }
+                in.close();
+                TypeToken<List<Reservation>> typeToken = new TypeToken<List<Reservation>>(){};
+                reservations = gson.fromJson(json.toString(), typeToken);
+            } else {
+                System.out.println("GET request failed with code " + statusCode);
+            }
+            con.disconnect();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return reservations;
+    }
+
     public static void main(String[] args) {
 //        getUserInfo(1);
 //        getUserInfo("email1");
@@ -287,5 +322,6 @@ public class ClientRequest {
 //        makeReservation(new Date(), 1, 1,1);
 //        deleteUser(4);
 //        updateUser(1, null, "update", null, "update@email.com");
+//        getAllReservation();
     }
 }
