@@ -20,9 +20,14 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-    @GetMapping
+    @GetMapping("/byId")
     public Optional<AppUser> getUser(@RequestParam Integer id) {
         return appUserService.getUser(id);
+    }
+
+    @GetMapping("/byEmail")
+    public Optional<AppUser> getUser(@RequestParam String email) {
+        return appUserService.findUserByEmail(email);
     }
 
     @PostMapping

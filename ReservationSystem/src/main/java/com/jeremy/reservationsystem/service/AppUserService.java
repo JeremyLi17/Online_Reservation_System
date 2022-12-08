@@ -68,4 +68,8 @@ public class AppUserService {
         }
         appUserRepo.deleteById(id);
     }
+
+    public Optional<AppUser> findUserByEmail(String email) {
+        return appUserRepo.findAppUserByEmail(email);
+    }
 }
