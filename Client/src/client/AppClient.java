@@ -17,8 +17,8 @@ import static utils.ClientRequest.*;
  */
 public class AppClient extends JDialog {
 
-    private static final int WIDTH = 900;
-    private static final int HEIGHT = 1200;
+    private static final int WIDTH = 950;
+    private static final int HEIGHT = 800;
 
     public static final String TIME_SLOT1 = "8AM - 10AM";
     public static final String TIME_SLOT2 = "10AM - 12PM";
@@ -76,6 +76,7 @@ public class AppClient extends JDialog {
     private JLabel descLabel;
     private JTextField searchByIDText;
     private JLabel orIDLabel;
+    private JScrollPane mainPanel;
 
     public AppClient(JFrame parent) {
         super(parent);
@@ -225,7 +226,7 @@ public class AppClient extends JDialog {
             }
         });
 
-        setContentPane(registerPanel);
+        setContentPane(mainPanel);
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setModal(true);
         setLocationRelativeTo(parent);
